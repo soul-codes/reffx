@@ -1,6 +1,6 @@
 {
   "name": "reffx",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A tiny utility for creating reference count-aware effects",
   "keywords": [
     "effect",

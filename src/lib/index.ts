@@ -1,3 +1,5 @@
 export * from "./Disposer";
-export * from "./reffx";
+export * from "./keyedObjectReffx";
 export * from "./keyedReffx";
+export * from "./objectReffx";
+export * from "./reffx";

@@ -82,6 +82,29 @@ disposeTopicB1(); // topic B subscription cleaned up
 disposeTopicA2(); // topic A subscription cleaned up
 ```
 
+## Reffx with Effect Object
+
+It can be useful for the effect to expose an interface with functionality
+that can be used as long as the effect is active. In this case, use
+`objectReffx`, which now returns a tuple of the effect object and the
+disposer.
+
+```ts
+import { keyedReffx } from "reffx";
+const clock = objectReffx(() => {
+  let time = new Date();
+  const getTime = () => time;
+  const intervalId = setInterval(() => new Date(), 1000);
+  return [time, () => clearInterval(intervalId)];
+});
+
+const [getTime, disposeClock] = clock();
+getTime(); // some date object here
+```
+
+A keyed version of `objectReffx`, called `keyedObjectReffx`, is also
+availble.
+
 ## Use Cases
 
 Reference count-aware effects can be used to perform effectful behavior such as

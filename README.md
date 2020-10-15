@@ -90,20 +90,90 @@ that can be used as long as the effect is active. In this case, use
 disposer.
 
 ```ts
-import { keyedReffx } from "reffx";
+import { objectReffx } from "reffx";
 const clock = objectReffx(() => {
   let time = new Date();
   const getTime = () => time;
   const intervalId = setInterval(() => new Date(), 1000);
-  return [time, () => clearInterval(intervalId)];
+  return [getTime, () => clearInterval(intervalId)];
 });
 
 const [getTime, disposeClock] = clock();
 getTime(); // some date object here
+disposeClock(); // reduces reference count to clock effect by 1.
 ```
 
 A keyed version of `objectReffx`, called `keyedObjectReffx`, is also
 availble.
+
+## Effect object decorator.
+
+The tuple of effect object/disposer returned by `objectReffx` and
+`keyedObjectReffx` is the default behavior. It is also possible to pass
+another argument to these functions that customizes how the effect object
+and the disposer are combined.
+
+```ts
+import { objectReffx } from "reffx";
+const clock = objectReffx(() => {
+  let time = new Date();
+  const getTime = () => time;
+  const intervalId = setInterval(() => new Date(), 1000);
+  return [getTime, () => clearInterval(intervalId)];
+}, (getTime, disposeClock) => ({ getTime, disposeClock }));
+
+const clockObject = clock();
+clockObject.getTime(); // some date object here
+clockObject.disposeClock(); // reduces reference count to clock effect by 1.
+```
+
+## Reference-counted subscription
+
+Using the idea of effect object, one can create a reference-counted effect that
+exposes a subscriber that automatically destroys the effect is no longer used.
+
+```ts
+import { objectReffx } from "reffx";
+import { atomicEvent } from "atomic-event";
+
+const subClock = objectReffx(() => {
+  let time = new Date();
+  const [sub, pub] = atomicEvent();
+  const intervalId = setInterval(() => pub(new Date()), 1000);
+  return [sub, () => clearInterval(intervalId)];
+}, (sub, disposeClock) => (callback) => {
+  const unsub = sub(callback);
+  return () => { unsub(); disposeClock(); }
+});
+
+const unsubClock1 = subClock(time => console.log(time));
+const unsubsubClock2 = clock(time => console.log(time));
+unsubClock1(); // clock still ticking
+unsubClock2(); // clock disposed
+```
+
+This pattern can be quite useful, so the package provides a shortcut, namely
+`subReffx` and `keyedSubReffx`, that assumes your effect function to return
+a subscriber/effect disposer pair. It then automatically decorates your effect
+object in the manner shown above. The decorator itself is also available
+as the import named [`asSubscriber`](./src/lib/asSubscriber.ts).
+
+```ts
+import { subReffx } from "reffx";
+import { atomicEvent } from "atomic-event";
+
+const subClock = subReffx(() => {
+  let time = new Date();
+  const [sub, pub] = atomicEvent();
+  const intervalId = setInterval(() => pub(new Date()), 1000);
+  return [sub, () => clearInterval(intervalId)];
+});
+
+const unsubClock1 = subClock(time => console.log(time));
+const unsubsubClock2 = clock(time => console.log(time));
+unsubClock1(); // clock still ticking
+unsubClock2(); // clock disposed
+```
 
 ## Use Cases
 

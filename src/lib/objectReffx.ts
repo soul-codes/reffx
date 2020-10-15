@@ -6,7 +6,11 @@ import { reffx } from "./reffx";
  * exposes further functionality to be used while the effect is active.
  * @param effect
  */
-export function objectReffx<T>(effect: () => readonly [T, Disposer]) {
+export function objectReffx<T, U = readonly [T, Disposer]>(
+  effect: () => readonly [T, Disposer],
+  decorate: (value: T, disposer: Disposer) => U = (value, disposer) =>
+    ([value, disposer] as unknown) as U
+) {
   let value!: T;
   const fx = reffx(() => {
     const [_value, disposer] = effect();
@@ -19,8 +23,8 @@ export function objectReffx<T>(effect: () => readonly [T, Disposer]) {
    * the effect will be invoked. Returns a tuple of the effect object and a
    * disposer that removes this reference.
    */
-  return function addRef(diagnosticTag?: unknown): readonly [T, Disposer] {
+  return function addRef(diagnosticTag?: unknown): U {
     const disposer = fx(diagnosticTag);
-    return [value, disposer];
+    return decorate(value, disposer);
   };
 }

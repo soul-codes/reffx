@@ -1,3 +1,10 @@
+## [0.9.1](https://gitlab.com/soul-codes/reffx/compare/0.9.1-rc.0...0.9.1) (2020-10-15)
+
+
+### Bug Fixes
+
+* 🐛 add exports and documentation ([bc605c3](https://gitlab.com/soul-codes/reffx/commit/bc605c3fce4a72603093e9a44effc6d84683b169))
+
 ## [0.9.1-rc.0](https://gitlab.com/soul-codes/reffx/compare/0.8.0...0.9.1-rc.0) (2020-10-15)
 
 

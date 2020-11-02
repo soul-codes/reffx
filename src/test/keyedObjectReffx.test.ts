@@ -28,7 +28,7 @@ test("keyedReffx", () => {
   expect(effectObjectA1.key).toBe("a");
 
   expect(effectObjectB1).toBe(effectObjectB2);
-  expect(effectObjectB1.key).toBe("a");
+  expect(effectObjectB1.key).toBe("b");
 
   disposeA1();
   expect(disposer).toHaveBeenCalledTimes(0);

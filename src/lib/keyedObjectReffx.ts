@@ -11,11 +11,14 @@ export function keyedObjectReffx<K, T, U = readonly [T, Disposer]>(
   decorate: (value: T, disposer: Disposer) => U = (value, disposer) =>
     ([value, disposer] as unknown) as U
 ) {
-  let value!: T;
+  const valueMap = new Map<K, T>();
   const fx = keyedReffx((key: K) => {
-    const [_value, disposer] = effect(key);
-    value = _value;
-    return disposer;
+    const [value, disposer] = effect(key);
+    valueMap.set(key, value);
+    return () => {
+      valueMap.delete(key);
+      disposer();
+    };
   });
 
   /**
@@ -25,6 +28,6 @@ export function keyedObjectReffx<K, T, U = readonly [T, Disposer]>(
    */
   return function addRef(key: K, diagnosticTag?: unknown): U {
     const disposer = fx(key, diagnosticTag);
-    return decorate(value, disposer);
+    return decorate(valueMap.get(key)!, disposer);
   };
 }

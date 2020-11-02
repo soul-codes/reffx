@@ -1,3 +1,10 @@
+## [0.9.2](https://gitlab.com/soul-codes/reffx/compare/0.9.1...0.9.2) (2020-11-02)
+
+
+### Bug Fixes
+
+* 🐛 fix keyed object reffx bug and activate test file ([72f86f6](https://gitlab.com/soul-codes/reffx/commit/72f86f685b693ccc62c3f4ff9e892408d36d69c2))
+
 ## [0.9.1](https://gitlab.com/soul-codes/reffx/compare/0.9.1-rc.0...0.9.1) (2020-10-15)
 
 

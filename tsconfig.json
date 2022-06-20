@@ -8,7 +8,13 @@
     "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
-    "types": ["node"]
+    "types": ["node"],
+    "plugins": [
+      {
+        "transform": "@zoltu/typescript-transformer-append-js-extension/output/index.js",
+        "after": true
+      }
+    ]
   },
   "include": ["src/lib"]
 }

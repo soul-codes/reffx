@@ -1,3 +1,10 @@
+# [1.0.0](https://github.com/soul-codes/reffx/compare/0.9.2...1.0.0) (2022-06-20)
+
+
+### Features
+
+* 🎸 ES module ([673c11d](https://github.com/soul-codes/reffx/commit/673c11d5e452fcb67c1c46eb606a140738649d4c))
+
 ## [0.9.2](https://gitlab.com/soul-codes/reffx/compare/0.9.1...0.9.2) (2020-11-02)
 
 

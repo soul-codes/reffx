@@ -1,5 +1,5 @@
 import { Disposer } from "./Disposer";
-import { keyedReffx } from "./keyedReffx";
+import { MapConstructor, keyedReffx } from "./keyedReffx";
 
 /**
  * Like `keyedReffx` but the effect can return a referentially stable object that
@@ -9,9 +9,10 @@ import { keyedReffx } from "./keyedReffx";
 export function keyedObjectReffx<K, T, U = readonly [T, Disposer]>(
   effect: (key: K) => readonly [T, Disposer],
   decorate: (value: T, disposer: Disposer) => U = (value, disposer) =>
-    ([value, disposer] as unknown) as U
+    ([value, disposer] as unknown) as U,
+  MapImpl: MapConstructor<K> = Map
 ) {
-  const valueMap = new Map<K, T>();
+  const valueMap = new MapImpl<T>();
   const fx = keyedReffx((key: K) => {
     const [value, disposer] = effect(key);
     valueMap.set(key, value);
@@ -19,7 +20,7 @@ export function keyedObjectReffx<K, T, U = readonly [T, Disposer]>(
       valueMap.delete(key);
       disposer();
     };
-  });
+  }, MapImpl);
 
   /**
    * Adds a reference to the maintained effect. If this is the first reference,

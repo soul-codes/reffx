@@ -7,8 +7,11 @@ import { reffx } from "./reffx";
  * they are called with.
  * @param effect
  */
-export function keyedReffx<T>(effect: (key: T) => Disposer) {
-  const fxs = new Map<T, () => Disposer>();
+export function keyedReffx<T>(
+  effect: (key: T) => Disposer,
+  MapImpl: MapConstructor<T> = Map
+) {
+  const fxs = new MapImpl<() => Disposer>();
 
   /**
    * Adds a reference to the maintained effect at key `key`. If this is the
@@ -26,3 +29,55 @@ export function keyedReffx<T>(effect: (key: T) => Disposer) {
     return fx(diagnosticTag);
   };
 }
+
+export interface MapInterface<K, T> {
+  set(key: K, value: T): void;
+  delete(key: K): void;
+  get(key: K): T | undefined;
+}
+
+export interface MapConstructor<K> {
+  new <T>(): MapInterface<K, T>;
+}
+
+/**
+ * Creates a Map implementation that serializes the key into a string so that
+ * object keys can be uniquely identified by their serialized value.
+ *
+ * @param serializer
+ * @returns
+ */
+export const SerMap = <K extends object>(
+  serializer: (key: K) => string
+): MapConstructor<K> => {
+  const cache = new WeakMap<K, string>();
+
+  function cachedSerialize(key: K) {
+    let hash = cache.get(key);
+    if (hash != null) return hash;
+
+    hash = serializer(key);
+    cache.set(key, hash);
+    return hash;
+  }
+
+  class SerMap<T> implements MapInterface<K, T> {
+    constructor() {}
+
+    get(key: K): T | undefined {
+      return this._map.get(cachedSerialize(key));
+    }
+
+    set(key: K, value: T) {
+      this._map.set(cachedSerialize(key), value);
+    }
+
+    delete(key: K) {
+      this._map.delete(cachedSerialize(key));
+    }
+
+    private readonly _map = new Map<string, T>();
+  }
+
+  return SerMap;
+};

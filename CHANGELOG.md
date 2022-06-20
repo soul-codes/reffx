@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/soul-codes/reffx/compare/1.0.0...1.1.0) (2022-06-20)
+
+
+### Features
+
+* 🎸 map implementation for keyed reffx ([6dceb9b](https://github.com/soul-codes/reffx/commit/6dceb9bdf10addff0101f017d0db40339ffe161c))
+
 # [1.0.0](https://github.com/soul-codes/reffx/compare/0.9.2...1.0.0) (2022-06-20)
 
 

@@ -9,7 +9,7 @@
     "disposable"
   ],
   "repository": {
-    "url": "https://gitlab.com/soul-codes/reffx"
+    "url": "https://github.com/soul-codes/reffx"
   },
   "scripts": {
     "clean": "rm -rf lib",
@@ -21,6 +21,7 @@
     "release": "npm run prepare && release-it",
     "tidy": "./bin/tidy.sh"
   },
+  "license": "MIT",
   "main": "lib",
   "types": "lib",
   "devDependencies": {
